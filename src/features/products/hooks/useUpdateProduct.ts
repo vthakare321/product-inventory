@@ -3,14 +3,18 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/react-query";
 
 import { productService } from "../services/product.service";
-import type { UpdateProductPayload } from "../types/product-mutation.types";
-
+import type { UpdateProductRequestDto } from "../dto/product.request";
 export function useUpdateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, payload }: UpdateProductPayload) =>
-      productService.updateProduct(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: number;
+      payload: UpdateProductRequestDto;
+    }) => productService.updateProduct(id, payload),
 
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
@@ -18,7 +22,9 @@ export function useUpdateProduct() {
       });
 
       queryClient.invalidateQueries({
-        queryKey: queryKeys.products.detail(variables.id),
+        queryKey: queryKeys.products.detail(
+          variables.id,
+        ),
       });
     },
   });

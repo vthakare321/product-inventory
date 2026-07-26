@@ -1,33 +1,28 @@
-import type { Product } from "../../types/product.types";
+import { EmptyState } from "@/shared/components/EmptyState/EmptyState";
 
 import { ProductCard } from "../ProductCard";
 
-interface ProductGridProps {
-  products: Product[];
-
-  canEdit: boolean;
-
-  onView: (id: number) => void;
-
-  onEdit: (id: number) => void;
-}
+import type { ProductGridProps } from "./ProductGrid.types";
 
 export function ProductGrid({
   products,
-  canEdit,
-  onView,
-  onEdit,
+  renderActions,
 }: ProductGridProps) {
+  if (products.length === 0) {
+    return (
+      <EmptyState message="No products found." />
+    );
+  }
+
   return (
-    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {products.map((product) => (
         <ProductCard
           key={product.id}
           product={product}
-          canEdit={canEdit}
-          onView={onView}
-          onEdit={onEdit}
-        />
+        >
+          {renderActions?.(product)}
+        </ProductCard>
       ))}
     </div>
   );

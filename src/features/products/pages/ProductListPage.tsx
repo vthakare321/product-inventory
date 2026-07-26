@@ -1,25 +1,23 @@
 import { useNavigate } from "react-router-dom";
 
-import { useProducts } from "../hooks/useProducts";
-import { useProductFilters } from "../hooks/useProductFilters";
+import { Button } from "@/shared/components/Button";
+import { Pagination } from "@/shared/components/Pagination/Pagination";
+import { QueryState } from "@/shared/components/QueryState";
+
+import { ROUTES } from "@/shared/constants/routes";
+import {
+  PERMISSIONS,
+  hasPermission,
+} from "@/shared/constants/permissions";
+
+import { useAuthStore } from "@/features/auth/store/auth.store";
 
 import { ProductGrid } from "../components/ProductGrid/ProductGrid";
 import { ProductHeader } from "../components/ProductHeader/ProductHeader";
 import { ProductSearch } from "../components/ProductSearch/ProductSearch";
 
-import { Loader } from "@/shared/components/Loader";
-import { EmptyState } from "@/shared/components/EmptyState/EmptyState";
-import { ErrorState } from "@/shared/components/ErrorState/ErrorState";
-import { Pagination } from "@/shared/components/Pagination/Pagination";
-
-import { useAuthStore } from "@/features/auth/store/auth.store";
-
-import {
-  hasPermission,
-  PERMISSIONS,
-} from "@/shared/constants/permissions";
-
-import { ROUTES } from "@/shared/constants/routes";
+import { useProductFilters } from "../hooks/useProductFilters";
+import { useProducts } from "../hooks/useProducts";
 
 export function ProductListPage() {
   const navigate = useNavigate();
@@ -43,48 +41,67 @@ export function ProductListPage() {
     PERMISSIONS.PRODUCT_EDIT,
   );
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  if (isError) {
-    return <ErrorState />;
-  }
-
-  if (!data) {
-    return <EmptyState />;
-  }
-
   return (
-    <div className="space-y-6">
-      <ProductHeader total={data.total} />
+    <QueryState
+      data={data}
+      isLoading={isLoading}
+      isError={isError}
+    >
+      {(response) => (
+        <div className="space-y-6">
+          <ProductHeader
+            total={response.total}
+          />
 
-      <ProductSearch
-        value={filters.search ?? ""}
-        onChange={setSearch}
-      />
+          <ProductSearch
+            value={filters.search ?? ""}
+            onChange={setSearch}
+          />
 
-      {data.products.length === 0 ? (
-        <EmptyState message="No products found." />
-      ) : (
-        <ProductGrid
-          products={data.products}
-          canEdit={canEdit}
-          onView={(id) =>
-            navigate(ROUTES.PRODUCT_DETAIL(id))
-          }
-          onEdit={(id) =>
-            navigate(ROUTES.PRODUCT_EDIT(id))
-          }
-        />
+          <ProductGrid
+            products={response.products}
+            renderActions={(product) => (
+              <div className="flex gap-2">
+                <Button
+                  fullWidth
+                  onClick={() =>
+                    navigate(
+                      ROUTES.PRODUCT_DETAIL(
+                        product.id,
+                      ),
+                    )
+                  }
+                >
+                  View
+                </Button>
+
+                {canEdit && (
+                  <Button
+                    variant="secondary"
+                    fullWidth
+                    onClick={() =>
+                      navigate(
+                        ROUTES.PRODUCT_EDIT(
+                          product.id,
+                        ),
+                      )
+                    }
+                  >
+                    Edit
+                  </Button>
+                )}
+              </div>
+            )}
+          />
+
+          <Pagination
+            currentPage={filters.page}
+            pageSize={filters.limit}
+            totalItems={response.total}
+            onPageChange={setPage}
+          />
+        </div>
       )}
-
-      <Pagination
-        currentPage={filters.page}
-        pageSize={filters.limit}
-        totalItems={data.total}
-        onPageChange={setPage}
-      />
-    </div>
+    </QueryState>
   );
 }
