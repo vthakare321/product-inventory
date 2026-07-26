@@ -1,42 +1,57 @@
 import { client } from "@/lib/axios";
 
+import type { ProductFilters } from "../types/product-filter.types";
+import type { ProductsResponseDto } from "../dto/product.response";
 import type { ProductDto } from "../dto/product.dto";
 import type { UpdateProductRequestDto } from "../dto/product.request";
-import type { ProductsResponseDto } from "../dto/product.response";
 
 export const productApi = {
-  getProducts: async (
-    limit = 10,
-    skip = 0,
-  ): Promise<ProductsResponseDto> => {
+  async getProducts(filters: ProductFilters) {
+    const {
+      page,
+      limit,
+      search,
+      sortBy,
+      order,
+    } = filters;
+
+    const skip = (page - 1) * limit;
+
+    const endpoint = search
+      ? "/products/search"
+      : "/products";
+
     const { data } = await client.get<ProductsResponseDto>(
-      "/products",
+      endpoint,
       {
         params: {
           limit,
           skip,
+          q: search || undefined,
+          sortBy: sortBy || undefined,
+          order: order || undefined,
         },
-      },
+      }
     );
 
     return data;
   },
 
-  getProduct: async (id: number): Promise<ProductDto> => {
+  async getProduct(id: number) {
     const { data } = await client.get<ProductDto>(
-      `/products/${id}`,
+      `/products/${id}`
     );
 
     return data;
   },
 
-  updateProduct: async (
+  async updateProduct(
     id: number,
-    payload: UpdateProductRequestDto,
-  ): Promise<ProductDto> => {
+    payload: UpdateProductRequestDto
+  ) {
     const { data } = await client.put<ProductDto>(
       `/products/${id}`,
-      payload,
+      payload
     );
 
     return data;

@@ -1,8 +1,10 @@
 export interface ProductFilters {
-  search: string;
-  category: string;
   page: number;
   limit: number;
+
+  search?: string;
+
   sortBy?: string;
+
   order?: "asc" | "desc";
 }
