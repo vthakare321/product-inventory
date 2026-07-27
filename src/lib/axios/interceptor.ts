@@ -1,6 +1,7 @@
 import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 import { client } from "./client";
+import { mapAxiosError } from "./errorMapper";
 
 client.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -13,6 +14,7 @@ client.interceptors.request.use(
 client.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    return Promise.reject(error);
+    // return Promise.reject(error);
+       return Promise.reject(mapAxiosError(error));
   },
 );

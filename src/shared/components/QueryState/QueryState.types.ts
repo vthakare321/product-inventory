@@ -7,5 +7,9 @@ export interface QueryStateProps<T> {
 
   isError: boolean;
 
+  error: unknown;
+
+  onRetry?: () => void;
+
   children: (data: T) => ReactNode;
 }
