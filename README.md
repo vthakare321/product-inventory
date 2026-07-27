@@ -294,7 +294,6 @@ This project uses DummyJSON, which has some limitations:
 - Product updates are simulated.
 - Data is not permanently stored.
 - Authentication is mock-based.
-- Product creation and deletion are not persisted.
 - Search and sorting depend on DummyJSON API support.
 
 ---

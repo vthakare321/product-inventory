@@ -1,4 +1,4 @@
-// TODO
+
 import type { ComponentType } from "react";
 
 import { LoginPage } from "@/features/auth/pages/LoginPage";
