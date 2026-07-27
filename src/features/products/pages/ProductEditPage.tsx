@@ -21,6 +21,8 @@ export function ProductEditPage() {
     data,
     isLoading,
     isError,
+    error,
+    refetch,
   } = useProduct(productId);
 
   const updateProduct = useUpdateProduct();
@@ -30,6 +32,8 @@ export function ProductEditPage() {
       data={data}
       isLoading={isLoading}
       isError={isError}
+      error={error}
+      onRetry={refetch}
     >
       {(product) => (
         <div className="space-y-6">

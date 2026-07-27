@@ -18,6 +18,8 @@ export function ProductDetailPage() {
     data,
     isLoading,
     isError,
+    error,
+    refetch,
   } = useProduct(Number(id));
 
   return (
@@ -25,6 +27,8 @@ export function ProductDetailPage() {
       data={data}
       isLoading={isLoading}
       isError={isError}
+      error={error}
+      onRetry={refetch}
     >
       {(product) => (
         <div className="space-y-6">

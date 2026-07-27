@@ -18,6 +18,7 @@ import { ProductSearch } from "../components/ProductSearch/ProductSearch";
 
 import { useProductFilters } from "../hooks/useProductFilters";
 import { useProducts } from "../hooks/useProducts";
+import {ProductSort} from "../components/ProductSort/ProductSort";
 
 export function ProductListPage() {
   const navigate = useNavigate();
@@ -28,12 +29,15 @@ export function ProductListPage() {
     filters,
     setPage,
     setSearch,
+    setSort,
   } = useProductFilters();
 
   const {
     data,
     isLoading,
     isError,
+    error,
+    refetch,
   } = useProducts(filters);
 
   const canEdit = hasPermission(
@@ -46,6 +50,8 @@ export function ProductListPage() {
       data={data}
       isLoading={isLoading}
       isError={isError}
+      error={error}
+      onRetry={refetch}
     >
       {(response) => (
         <div className="space-y-6">
@@ -57,6 +63,12 @@ export function ProductListPage() {
             value={filters.search ?? ""}
             onChange={setSearch}
           />
+
+          <ProductSort
+    sortBy={filters.sortBy}
+    order={filters.order}
+    onSortChange={setSort}
+  />
 
           <ProductGrid
             products={response.products}

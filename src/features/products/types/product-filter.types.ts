@@ -1,10 +1,12 @@
+import { ProductSortField, SortOrder } from "./product-sort.types";
+
 export interface ProductFilters {
   page: number;
   limit: number;
 
   search?: string;
 
-  sortBy?: string;
+  sortBy?: ProductSortField;
 
-  order?: "asc" | "desc";
+  order?: SortOrder;
 }

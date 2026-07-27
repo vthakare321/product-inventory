@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 
 import type { ProductFilters } from "../types/product-filter.types";
+import { ProductSortField, SortOrder} from "../types/product-sort.types";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 12;
@@ -15,12 +16,11 @@ export function useProductFilters() {
 
     search: searchParams.get("search") ?? "",
 
-    sortBy: searchParams.get("sortBy") ?? "",
+    sortBy: (searchParams.get("sortBy") as ProductSortField | null) ?? undefined,
 
     order:
       (searchParams.get("order") as
-        | "asc"
-        | "desc") ?? "asc",
+        SortOrder | null) ?? undefined  ,
   };
 
   const updateFilters = (
@@ -65,12 +65,13 @@ export function useProductFilters() {
       }),
 
     setSort: (
-      sortBy: string,
-      order: "asc" | "desc",
-    ) =>
-      updateFilters({
-        sortBy,
-        order,
-      }),
+  sortBy: ProductSortField,
+  order: SortOrder,
+) =>
+  updateFilters({
+    page: 1,
+    sortBy,
+    order,
+  }),
   };
 }
