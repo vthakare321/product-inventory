@@ -1,4 +1,4 @@
-// TODO
+
 const {
   VITE_APP_NAME,
   VITE_API_URL,
